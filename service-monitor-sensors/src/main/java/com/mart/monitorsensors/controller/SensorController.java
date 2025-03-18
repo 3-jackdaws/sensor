@@ -48,7 +48,7 @@ public class SensorController implements SensorsApi {
         binder.addValidators(sensorPatchDTOValidator);
     }
 
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole(T(com.mart.monitorsensors.constants.RoleConstants).ADMINISTRATOR)")
     @Override
     public ResponseEntity<SensorResponseDTO> createSensor(SensorPostDTO body) {
         log.info("Init sensor creation process: [{}]", body);
@@ -58,7 +58,7 @@ public class SensorController implements SensorsApi {
                                 sensorMapper.toModel(body))));
     }
 
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole(T(com.mart.monitorsensors.constants.RoleConstants).ADMINISTRATOR)")
     @Override
     public ResponseEntity<Void> deleteSensor(Long id) {
         log.info("Init sensor deletion process: [{}]", id);
@@ -66,7 +66,8 @@ public class SensorController implements SensorsApi {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('VIEWER') or hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole(T(com.mart.monitorsensors.constants.RoleConstants).VIEWER) " +
+            "or hasRole(T(com.mart.monitorsensors.constants.RoleConstants).ADMINISTRATOR)")
     @Override
     public ResponseEntity<SensorResponseDTO> getSensorById(Long id) {
         log.info("Get sensor by id [{}]", id);
@@ -75,7 +76,8 @@ public class SensorController implements SensorsApi {
                         sensorService.getSensorById(id)));
     }
 
-    @PreAuthorize("hasRole('VIEWER') or hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole(T(com.mart.monitorsensors.constants.RoleConstants).VIEWER) " +
+            "or hasRole(T(com.mart.monitorsensors.constants.RoleConstants).ADMINISTRATOR)")
     @Override
     public ResponseEntity<List<SensorResponseDTO>> getSensors(String name, String model) {
         log.info("Getting sensors with filters - name: [{}], model: [{}]", name, model);
@@ -85,7 +87,7 @@ public class SensorController implements SensorsApi {
         return ResponseEntity.ok(response);
     }
 
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole(T(com.mart.monitorsensors.constants.RoleConstants).ADMINISTRATOR)")
     @Override
     public ResponseEntity<SensorResponseDTO> patchSensor(Long id, SensorPatchDTO body) {
         log.info("Init sensor patch process for id: [{}]", id);
@@ -96,7 +98,7 @@ public class SensorController implements SensorsApi {
                                 id, sensorMapper.toModel(body))));
     }
 
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole(T(com.mart.monitorsensors.constants.RoleConstants).ADMINISTRATOR)")
     @Override
     public ResponseEntity<SensorResponseDTO> updateSensor(Long id, SensorPutDTO body) {
         log.info("Init sensor update process for id: [{}]", id);

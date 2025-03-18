@@ -43,11 +43,12 @@ springdoc:
     display-query-params: true
 
 security:
-  user:
-    name: admin
-    password: admin
-    roles: ADMINISTRATOR
-  roles:
+  users:
+    admin:
+      username: admin
+      password: admin
+      role: ADMINISTRATOR
     viewer:
       username: user
       password: user
+      role: VIEWER

@@ -1,5 +1,7 @@
 package com.mart.monitorsensors.config;
 
+import com.mart.monitorsensors.constant.RoleConstants;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,16 +16,28 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
+    @Value("${security.users.admin.username}")
+    private String adminUsername;
+
+    @Value("${security.users.admin.password}")
+    private String adminPassword;
+
+    @Value("${security.users.viewer.username}")
+    private String viewerUsername;
+
+    @Value("${security.users.viewer.password}")
+    private String viewerPassword;
+
     @Bean
     public InMemoryUserDetailsManager userDetailsService() {
-        var admin = User.withUsername("admin")
-                .password(passwordEncoder().encode("admin"))
-                .roles("ADMINISTRATOR")
+        var admin = User.withUsername(adminUsername)
+                .password(passwordEncoder().encode(adminPassword))
+                .roles(RoleConstants.ADMINISTRATOR)
                 .build();
 
-        var viewer = User.withUsername("user")
-                .password(passwordEncoder().encode("user"))
-                .roles("VIEWER")
+        var viewer = User.withUsername(viewerUsername)
+                .password(passwordEncoder().encode(viewerPassword))
+                .roles(RoleConstants.VIEWER)
                 .build();
 
         return new InMemoryUserDetailsManager(admin, viewer);
@@ -39,8 +53,9 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/sensors/**").hasAnyRole("VIEWER", "ADMINISTRATOR")
-                        .requestMatchers("/sensors/**").hasRole("ADMINISTRATOR")
+                        .requestMatchers(HttpMethod.GET, "/sensors/**")
+                        .hasAnyRole(RoleConstants.VIEWER, RoleConstants.ADMINISTRATOR)
+                        .requestMatchers("/sensors/**").hasRole(RoleConstants.ADMINISTRATOR)
                 )
                 .httpBasic(httpBasic -> {
                 });

@@ -30,9 +30,8 @@ public class SensorReferenceService {
 
     @Cacheable(value = "sensorTypes", key = "#sensor.type.name().toLowerCase()")
     public SensorTypeEntity getSensorTypeEntity(Sensor sensor) {
-        SensorTypeEntity sensorType = sensorTypeRepository.findByNameIgnoreCase(sensor.getType().name())
+        return sensorTypeRepository.findByNameIgnoreCase(sensor.getType().name())
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Sensor type not found: " + sensor.getType()));
-        return sensorType;
     }
 }
