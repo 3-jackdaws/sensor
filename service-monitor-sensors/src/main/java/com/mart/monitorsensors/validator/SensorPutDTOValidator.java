@@ -50,7 +50,7 @@ public class SensorPutDTOValidator implements Validator {
                 UnitOfMeasurement.fromValue(dto.getUnit().toString()); // Проверяем, входит ли значение в список допустимых
             } catch (IllegalArgumentException e) {
                 errors.rejectValue("unit", "unit.invalid", "Invalid Unit: " + dto.getUnit() +
-                        ". Valid units are: bar, voltage, degreeCelsius, percent");
+                        ". Valid units are: bar, voltage, degree_celsius, percent");
             }
         }
     }

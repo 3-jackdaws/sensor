@@ -54,7 +54,9 @@ public class SensorServiceImpl implements SensorService {
     public Sensor createSensor(Sensor sensor) {
         SensorEntity sensorEntity = sensorMapper.toEntity(sensor);
         sensorEntity.setType(sensorReferenceService.getSensorTypeEntity(sensor));
-        sensorEntity.setUnit(sensorReferenceService.getSensorUnitEntity(sensor));
+        if (sensor.getUnit() != null) {
+            sensorEntity.setUnit(sensorReferenceService.getSensorUnitEntity(sensor));
+        }
 
         SensorEntity savedSensorEntity = sensorRepository.save(sensorEntity);
 

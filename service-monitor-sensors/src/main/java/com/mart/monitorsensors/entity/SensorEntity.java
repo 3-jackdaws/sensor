@@ -32,7 +32,7 @@ public class SensorEntity {
     private SensorTypeEntity type;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "unit_id", nullable = false)
+    @JoinColumn(name = "unit_id", nullable = true)
     private SensorUnitEntity unit;
 
     @Column(length = 40)

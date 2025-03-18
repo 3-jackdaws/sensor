@@ -2,7 +2,7 @@ type: string
 enum:
   - bar
   - voltage
-  - degreeCelsius
+  - degree_celsius
   - percent
 description: Unit of measurement
 example: bar

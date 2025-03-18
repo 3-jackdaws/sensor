@@ -17,7 +17,7 @@ public class SensorReferenceService {
     private final SensorUnitRepository sensorUnitRepository;
     private final SensorTypeRepository sensorTypeRepository;
 
-    @Cacheable(value = "sensorUnits", key = "#sensor.unit.name().toLowerCase()", unless = "#sensor.unit == null")
+    @Cacheable(value = "sensorUnits", key = "#sensor.unit.name()", unless = "#sensor.unit == null")
     public @Nullable SensorUnitEntity getSensorUnitEntity(Sensor sensor) {
         SensorUnitEntity sensorUnit = null;
         if (sensor.getUnit() != null) {
@@ -28,7 +28,7 @@ public class SensorReferenceService {
         return sensorUnit;
     }
 
-    @Cacheable(value = "sensorTypes", key = "#sensor.type.name().toLowerCase()")
+    @Cacheable(value = "sensorTypes", key = "#sensor.type.name()")
     public SensorTypeEntity getSensorTypeEntity(Sensor sensor) {
         return sensorTypeRepository.findByNameIgnoreCase(sensor.getType().name())
                 .orElseThrow(() -> new IllegalArgumentException(

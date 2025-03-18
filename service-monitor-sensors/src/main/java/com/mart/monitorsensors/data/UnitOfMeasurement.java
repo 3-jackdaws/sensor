@@ -3,6 +3,6 @@ package com.mart.monitorsensors.data;
 public enum UnitOfMeasurement {
     BAR,
     VOLTAGE,
-    DEGREECELSIUS,
+    DEGREE_CELSIUS,
     PERCENT,
 }
