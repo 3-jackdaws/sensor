@@ -1,0 +1,8 @@
+type: string
+enum:
+  - bar
+  - voltage
+  - degreeCelsius
+  - percent
+description: Unit of measurement
+example: bar

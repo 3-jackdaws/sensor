@@ -1,0 +1,29 @@
+type: object
+properties:
+  id:
+    type: integer
+    format: int64
+    description: Unique identifier for the sensor
+    example: 3500
+  name:
+    type: string
+    description: Name of the sensor
+    example: Barometer
+  model:
+    type: string
+    description: Model of the sensor
+    example: ac-23
+  range:
+    $ref: './RangeDTO.yaml'
+  type:
+    $ref: '../enums/SensorType.yaml'
+  unit:
+    $ref: '../enums/UnitOfMeasurement.yaml'
+  location:
+    type: string
+    description: Location of the sensor
+    example: kitchen
+  description:
+    type: string
+    description: Description of the sensor
+    example: The best sensor you've ever seen

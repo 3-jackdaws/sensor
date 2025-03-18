@@ -1,0 +1,9 @@
+description: API single error description.
+type: object
+properties:
+  error:
+    type: string
+    example: 'NotFound'
+  message:
+    type: string
+    example: 'Resource could not be found'

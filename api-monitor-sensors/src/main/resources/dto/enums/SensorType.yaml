@@ -1,0 +1,8 @@
+type: string
+enum:
+  - Pressure
+  - Voltage
+  - Temperature
+  - Humidity
+description: Type of the sensor
+example: Pressure

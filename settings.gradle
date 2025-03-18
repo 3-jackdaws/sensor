@@ -1,0 +1,3 @@
+rootProject.name = 'monitor-sensors'
+include 'api-monitor-sensors'
+include 'service-monitor-sensors'

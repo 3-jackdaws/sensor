@@ -1,0 +1,199 @@
+openapi: 3.0.3
+info:
+  title: Monitor Sensors API
+  description: API for monitor sensors.
+  version: 1.0.0
+tags:
+  - name: Sensors
+    description: Monitor sensors API
+
+servers:
+  - url: https://localhost:8080
+
+paths:
+  /sensors:
+    get:
+      summary: Retrieve a list of all sensors
+      operationId: getSensors
+      tags:
+        - Sensors
+      parameters:
+        - name: name
+          in: query
+          description: Partial search for a sensor by its name
+          required: false
+          schema:
+            type: string
+        - name: model
+          in: query
+          description: Partial search for a sensor by its model
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved the list of sensors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SensorResponseDTO'
+
+    post:
+      summary: Create a new sensor
+      operationId: createSensor
+      tags:
+        - Sensors
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SensorPostDTO'
+      responses:
+        201:
+          description: Sensor successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SensorResponseDTO'
+        400:
+          description: One parameter in the request is incorrect.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorDTO'
+
+
+  /sensors/{id}:
+    get:
+      summary: Retrieve details of a specific sensor
+      operationId: getSensorById
+      tags:
+        - Sensors
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the sensor
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Successfully retrieved sensor details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SensorResponseDTO'
+        404:
+          description: Target sensor not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorDTO'
+
+    patch:
+      summary: Partially update an existing sensor
+      operationId: patchSensor
+      tags:
+        - Sensors
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the sensor
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SensorPatchDTO'
+      responses:
+        200:
+          description: Sensor successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SensorResponseDTO'
+        404:
+          description: Target sensor not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorDTO'
+
+    put:
+      summary: Update an existing sensor
+      operationId: updateSensor
+      tags:
+        - Sensors
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the sensor
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SensorPutDTO'
+      responses:
+        200:
+          description: Sensor successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SensorResponseDTO'
+        404:
+          description: Target sensor not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorDTO'
+
+    delete:
+      summary: Delete a sensor.
+      operationId: deleteSensor
+      tags:
+        - Sensors
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the sensor
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Sensor successfully deleted
+        404:
+          description: Target sensor not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorDTO'
+
+components:
+  schemas:
+    SensorPostDTO:
+      $ref: './dto/sensor/SensorPostDTO.yaml'
+    SensorPatchDTO:
+      $ref: './dto/sensor/SensorPatchDTO.yaml'
+    SensorPutDTO:
+      $ref: './dto/sensor/SensorPutDTO.yaml'
+    SensorResponseDTO:
+      $ref: './dto/sensor/SensorResponseDTO.yaml'
+
+
+    ApiErrorDTO:
+      $ref: './dto/error/ApiErrorDTO.yaml'

@@ -1,0 +1,13 @@
+type: object
+required:
+  - from
+  - to
+properties:
+  from:
+    type: integer
+    description: Minimum value of the sensor's range
+    example: 22
+  to:
+    type: integer
+    description: Maximum value of the sensor's range
+    example: 45
