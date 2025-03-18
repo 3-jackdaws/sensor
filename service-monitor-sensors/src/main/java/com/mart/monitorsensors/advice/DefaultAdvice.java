@@ -1,6 +1,7 @@
 package com.mart.monitorsensors.advice;
 
 import com.mart.dto.ApiErrorDTO;
+import com.mart.monitorsensors.exception.SensorNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,14 @@ public class DefaultAdvice extends ResponseEntityExceptionHandler {
     public ResponseEntity<ApiErrorDTO> handleBadRequestException(Exception e) {
         log.error(e.getMessage(), e);
         return buildErrorResponseDto(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler({
+            SensorNotFoundException.class
+    })
+    public ResponseEntity<ApiErrorDTO> handleNotFoundException(Exception e) {
+        log.error(e.getMessage(), e);
+        return buildErrorResponseDto(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
     private <T> ResponseEntity<T> buildErrorResponseDto(HttpStatus status, String message) {
