@@ -1,6 +1,8 @@
 package com.mart.monitorsensors.validator;
 
 import com.mart.dto.SensorPostDTO;
+import com.mart.dto.SensorType;
+import com.mart.dto.UnitOfMeasurement;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -9,9 +11,6 @@ import java.util.List;
 
 @Component
 public class SensorPostDTOValidator implements Validator {
-
-    private static final List<String> VALID_TYPES = List.of("Pressure", "Voltage", "Temperature", "Humidity");
-    private static final List<String> VALID_UNITS = List.of("bar", "voltage", "°С", "%");
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -44,14 +43,27 @@ public class SensorPostDTOValidator implements Validator {
     }
 
     private static void validateUnit(Errors errors, SensorPostDTO dto) {
-        if (dto.getUnit() != null && !VALID_UNITS.contains(dto.getUnit().toString())) {
-            errors.rejectValue("unit", "unit.invalid", "Unit must be one of: " + VALID_UNITS);
+        if (dto.getUnit() == null) {
+            errors.rejectValue("unit", "unit.required", "Unit is required");
+        } else {
+            try {
+                UnitOfMeasurement.fromValue(dto.getUnit().toString());
+            } catch (IllegalArgumentException e) {
+                errors.rejectValue("unit", "unit.invalid", "Invalid Unit: " + dto.getUnit() +
+                        ". Valid units are: bar, voltage, degreeCelsius, percent");
+            }
         }
     }
 
     private static void validateType(Errors errors, SensorPostDTO dto) {
-        if (dto.getType() == null || !VALID_TYPES.contains(dto.getType().toString())) {
-            errors.rejectValue("type", "type.invalid", "Type must be one of: " + VALID_TYPES);
+        if (dto.getType() == null) {
+            errors.rejectValue("type", "type.required", "Type is required");
+        } else {
+            try {
+                SensorType.fromValue(dto.getType().toString());
+            } catch (IllegalArgumentException e) {
+                errors.rejectValue("type", "type.invalid", "Invalid Type: " + dto.getType() + ". Valid types: " + List.of(SensorType.values()));
+            }
         }
     }
 

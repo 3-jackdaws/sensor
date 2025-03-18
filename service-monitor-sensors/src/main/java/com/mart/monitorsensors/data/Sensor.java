@@ -9,8 +9,8 @@ public class Sensor {
     private String model;
     private Integer rangeFrom;
     private Integer rangeTo;
-    private String type;
-    private String unit;
+    private SensorType type;
+    private UnitOfMeasurement unit;
     private String location;
     private String description;
 }

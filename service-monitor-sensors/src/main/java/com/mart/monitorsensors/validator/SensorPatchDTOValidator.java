@@ -1,6 +1,8 @@
 package com.mart.monitorsensors.validator;
 
 import com.mart.dto.SensorPatchDTO;
+import com.mart.dto.SensorType;
+import com.mart.dto.UnitOfMeasurement;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -9,9 +11,6 @@ import java.util.List;
 
 @Component
 public class SensorPatchDTOValidator implements Validator {
-
-    private static final List<String> VALID_TYPES = List.of("Pressure", "Voltage", "Temperature", "Humidity");
-    private static final List<String> VALID_UNITS = List.of("bar", "voltage", "°С", "%");
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -32,10 +31,10 @@ public class SensorPatchDTOValidator implements Validator {
             validateRange(errors, dto.getRange().getFrom(), dto.getRange().getTo());
         }
         if (dto.getType() != null) {
-            validateType(errors, dto.getType().toString());
+            validateType(errors, dto);
         }
         if (dto.getUnit() != null) {
-            validateUnit(errors, dto.getUnit().toString());
+            validateUnit(errors, dto);
         }
         if (dto.getLocation() != null) {
             validateLocation(errors, dto.getLocation());
@@ -74,15 +73,28 @@ public class SensorPatchDTOValidator implements Validator {
         }
     }
 
-    private void validateType(Errors errors, String type) {
-        if (!VALID_TYPES.contains(type)) {
-            errors.rejectValue("type", "type.invalid", "Type must be one of: " + VALID_TYPES);
+    private static void validateType(Errors errors, SensorPatchDTO dto) {
+        if (dto.getType() == null) {
+            errors.rejectValue("type", "type.required", "Type is required");
+        } else {
+            try {
+                SensorType.fromValue(dto.getType().toString());
+            } catch (IllegalArgumentException e) {
+                errors.rejectValue("type", "type.invalid", "Invalid Type: " + dto.getType() + ". Valid types: " + List.of(SensorType.values()));
+            }
         }
     }
 
-    private void validateUnit(Errors errors, String unit) {
-        if (!VALID_UNITS.contains(unit)) {
-            errors.rejectValue("unit", "unit.invalid", "Unit must be one of: " + VALID_UNITS);
+    private static void validateUnit(Errors errors, SensorPatchDTO dto) {
+        if (dto.getUnit() == null) {
+            errors.rejectValue("unit", "unit.required", "Unit is required");
+        } else {
+            try {
+                UnitOfMeasurement.fromValue(dto.getUnit().toString()); // Проверяем, входит ли значение в список допустимых
+            } catch (IllegalArgumentException e) {
+                errors.rejectValue("unit", "unit.invalid", "Invalid Unit: " + dto.getUnit() +
+                        ". Valid units are: bar, voltage, degreeCelsius, percent");
+            }
         }
     }
 
