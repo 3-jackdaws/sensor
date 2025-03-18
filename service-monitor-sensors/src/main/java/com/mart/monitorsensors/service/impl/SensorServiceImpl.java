@@ -25,6 +25,7 @@ public class SensorServiceImpl implements SensorService {
     private final SensorRepository sensorRepository;
     private final SensorMapper sensorMapper;
     private final SensorPatchMapper patchMapper;
+    private final SensorValidationService sensorValidationService;
 
     public List<Sensor> getAllSensors(String name, String model) {
         log.info("Searching sensors by name: [{}] and model: [{}]", name, model);
@@ -80,6 +81,8 @@ public class SensorServiceImpl implements SensorService {
         log.info("Patching sensor with id: {}", id);
         log.debug("Patching sensor: {}", sensor);
         patchMapper.copyNonNullFields(sensor, updates);
+
+        sensorValidationService.validateSensor(sensor);
 
         return sensorMapper.toModel(
                 sensorRepository.save(
