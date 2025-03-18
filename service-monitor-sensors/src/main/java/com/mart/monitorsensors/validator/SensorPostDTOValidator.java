@@ -43,9 +43,7 @@ public class SensorPostDTOValidator implements Validator {
     }
 
     private static void validateUnit(Errors errors, SensorPostDTO dto) {
-        if (dto.getUnit() == null) {
-            errors.rejectValue("unit", "unit.required", "Unit is required");
-        } else {
+        if (dto.getUnit() != null) {
             try {
                 UnitOfMeasurement.fromValue(dto.getUnit().toString());
             } catch (IllegalArgumentException e) {

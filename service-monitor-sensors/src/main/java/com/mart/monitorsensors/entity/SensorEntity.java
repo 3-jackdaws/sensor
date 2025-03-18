@@ -27,11 +27,13 @@ public class SensorEntity {
     @Column(name = "range_to", nullable = false)
     private Integer rangeTo;
 
-    @Column(nullable = false, length = 20)
-    private String type;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "type_id", nullable = false)
+    private SensorTypeEntity type;
 
-    @Column(length = 10)
-    private String unit;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "unit_id", nullable = false)
+    private SensorUnitEntity unit;
 
     @Column(length = 40)
     private String location;

@@ -2,14 +2,19 @@ package com.mart.monitorsensors.service.impl;
 
 import com.mart.monitorsensors.data.Sensor;
 import com.mart.monitorsensors.entity.SensorEntity;
+import com.mart.monitorsensors.entity.SensorTypeEntity;
+import com.mart.monitorsensors.entity.SensorUnitEntity;
 import com.mart.monitorsensors.exception.SensorNotFoundException;
 import com.mart.monitorsensors.mapper.SensorMapper;
 import com.mart.monitorsensors.mapper.SensorPatchMapper;
 import com.mart.monitorsensors.repository.SensorRepository;
+import com.mart.monitorsensors.repository.SensorTypeRepository;
+import com.mart.monitorsensors.repository.SensorUnitRepository;
 import com.mart.monitorsensors.service.SensorService;
 import com.mart.monitorsensors.specification.SensorSpecifications;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -23,6 +28,8 @@ import java.util.List;
 public class SensorServiceImpl implements SensorService {
 
     private final SensorRepository sensorRepository;
+    private final SensorUnitRepository sensorUnitRepository;
+    private final SensorTypeRepository sensorTypeRepository;
     private final SensorMapper sensorMapper;
     private final SensorPatchMapper patchMapper;
     private final SensorValidationService sensorValidationService;
@@ -49,12 +56,35 @@ public class SensorServiceImpl implements SensorService {
                 .orElseThrow(() -> new SensorNotFoundException("Sensor with id: [%s] not found".formatted(id)));
     }
 
+    @Override
     public Sensor createSensor(Sensor sensor) {
-        log.info("Creating sensor: {}", sensor);
-        SensorEntity savedSensorEntity = sensorRepository.save(sensorMapper.toEntity(sensor));
-        log.info("Saved sensor: {}", savedSensorEntity);
+        SensorTypeEntity sensorType = getSensorTypeEntity(sensor);
+        SensorUnitEntity sensorUnit = getSensorUnitEntity(sensor);
+
+        SensorEntity sensorEntity = sensorMapper.toEntity(sensor);
+        sensorEntity.setType(sensorType);
+        sensorEntity.setUnit(sensorUnit);
+
+        SensorEntity savedSensorEntity = sensorRepository.save(sensorEntity);
 
         return sensorMapper.toModel(savedSensorEntity);
+    }
+
+    private @Nullable SensorUnitEntity getSensorUnitEntity(Sensor sensor) {
+        SensorUnitEntity sensorUnit = null;
+        if (sensor.getUnit() != null) {
+            sensorUnit = sensorUnitRepository.findByNameIgnoreCase(sensor.getUnit().name())
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Sensor unit not found: " + sensor.getUnit()));
+        }
+        return sensorUnit;
+    }
+
+    private SensorTypeEntity getSensorTypeEntity(Sensor sensor) {
+        SensorTypeEntity sensorType = sensorTypeRepository.findByNameIgnoreCase(sensor.getType().name())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Sensor type not found: " + sensor.getType()));
+        return sensorType;
     }
 
     @Transactional
@@ -68,6 +98,9 @@ public class SensorServiceImpl implements SensorService {
 
         updatedSensorEntity.setId(existingEntity.getId());
         updatedSensorEntity.setCreatedAt(existingEntity.getCreatedAt());
+
+        updatedSensorEntity.setUnit(getSensorUnitEntity(changedSensor));
+        updatedSensorEntity.setType(getSensorTypeEntity(changedSensor));
 
         SensorEntity savedEntity = sensorRepository.save(updatedSensorEntity);
         log.info("Updated sensor saved: {}", savedEntity);
@@ -84,9 +117,11 @@ public class SensorServiceImpl implements SensorService {
 
         sensorValidationService.validateSensor(sensor);
 
-        return sensorMapper.toModel(
-                sensorRepository.save(
-                        sensorMapper.toEntity(sensor)));
+        SensorEntity sensorEntity = sensorMapper.toEntity(sensor);
+        sensorEntity.setType(getSensorTypeEntity(sensor));
+        sensorEntity.setUnit(getSensorUnitEntity(sensor));
+
+        return sensorMapper.toModel(sensorRepository.save(sensorEntity));
     }
 
     @Transactional

@@ -9,14 +9,14 @@ spring:
     active: local
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/sensors
+    url: jdbc:postgresql://localhost:5432/sensors?currentSchema=public
     username: postgres
     password: root
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: true
     properties:
       hibernate:
@@ -24,11 +24,14 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
   flyway:
-    enabled: false
-    locations: classpath:db/migration
+    url: jdbc:postgresql://localhost:5432/sensors?currentSchema=public
+    user: postgres
+    password: root
     baseline-on-migrate: true
-    placeholders:
-      some_placeholder: value
+    locations: classpath:db/migration
+    baseline-version: 1
+    schemas: public
+    validate-on-migrate: true
 
 springdoc:
   api-docs:

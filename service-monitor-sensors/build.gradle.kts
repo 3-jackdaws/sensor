@@ -11,7 +11,6 @@ plugins {
     groovy
     id("org.springframework.boot") version "3.4.3"
     id("io.spring.dependency-management") version "1.1.7"
-    id("org.flywaydb.flyway")
     kotlin("jvm") version "1.9.0"
 }
 
@@ -33,18 +32,18 @@ springBoot {
 dependencies {
     implementation(project(":api-monitor-sensors"))
 
-    //springboot
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    //security
     implementation("org.springframework.boot:spring-boot-starter-security")
+
+    implementation("org.flywaydb:flyway-database-postgresql:10.20.1")
 
     implementation("org.jetbrains:annotations:$jetbrainsAnnotationsVersion")
 
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
 
-    implementation("org.postgresql:postgresql")
+    implementation("org.postgresql:postgresql:42.6.0")
 
     //mapstruct
     implementation("org.mapstruct:mapstruct:$mapstructVersion")
